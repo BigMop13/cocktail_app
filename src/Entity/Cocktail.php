@@ -2,40 +2,68 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\Controller\CategoryCocktailsController;
 use App\Repository\CocktailRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CocktailRepository::class)]
-#[ApiResource]
+#[ApiResource(operations: [
+    new GetCollection(),
+    new Get(),
+    new Post(),
+    new Get(
+        uriTemplate: '/category_cocktails/{categoryId}',
+        formats: ['json' => ['application/json']],
+        defaults: ['_api_receive'=>false],
+        controller: CategoryCocktailsController::class,
+        normalizationContext: ['groups' => ['cocktail:read']],
+        denormalizationContext: ['groups' => ['cocktail:write']],
+        name: 'category_cocktails',
+    )
+])]
 class Cocktail
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
+    #[ApiProperty(identifier: true)]
     private int $id;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
     private string $name;
 
     #[ORM\Column(type: Types::ARRAY)]
+    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
     private array $ingredients = [];
 
     #[ORM\Column]
+    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
     private int $stars;
 
     #[ORM\Column]
+    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
     private int $prepare_time;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
     private string $difficulty;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
     private ?string $image = null;
 
-    #[ORM\ManyToOne(inversedBy: 'cocktail_id')]
+    #[ORM\ManyToOne(inversedBy: 'cocktail')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
     private ?Category $category = null;
 
     public function getId(): int
