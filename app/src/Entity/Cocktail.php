@@ -27,7 +27,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
         denormalizationContext: ['groups' => ['cocktail:write']],
         name: 'category_cocktails',
     )
-])]
+],
+    formats: ['json' => ['application/json']],
+    normalizationContext: ['groups' => ['cocktail:read']],
+    denormalizationContext: ['groups' => ['cocktail:write']],
+)]
 class Cocktail
 {
     #[ORM\Id]
@@ -64,7 +68,10 @@ class Cocktail
     #[ORM\ManyToOne(inversedBy: 'cocktail')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
-    private ?Category $category = null;
+    private Category $category;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $instruction = null;
 
     public function getId(): int
     {
@@ -151,6 +158,18 @@ class Cocktail
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getInstruction(): string
+    {
+        return $this->instruction;
+    }
+
+    public function setInstruction(string $instruction): self
+    {
+        $this->instruction = $instruction;
 
         return $this;
     }
