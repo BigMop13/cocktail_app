@@ -23,11 +23,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
         formats: ['json' => ['application/json']],
         defaults: ['_api_receive'=>false],
         controller: CategoryCocktailsController::class,
-        normalizationContext: ['groups' => ['cocktail:read']],
-        denormalizationContext: ['groups' => ['cocktail:write']],
         name: 'category_cocktails',
-    )
-])]
+    ),
+],
+    formats: ['json' => ['application/json']],
+    normalizationContext: ['groups' => ['cocktail:read']],
+    denormalizationContext: ['groups' => ['cocktail:write']],
+)]
 class Cocktail
 {
     #[ORM\Id]
@@ -51,7 +53,7 @@ class Cocktail
 
     #[ORM\Column]
     #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
-    private int $prepare_time;
+    private int $prepareTime;
 
     #[ORM\Column(length: 255)]
     #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
@@ -65,6 +67,10 @@ class Cocktail
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
     private ?Category $category = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read'])]
+    private string $instructions;
 
     public function getId(): int
     {
@@ -109,12 +115,12 @@ class Cocktail
 
     public function getPrepareTime(): ?int
     {
-        return $this->prepare_time;
+        return $this->prepareTime;
     }
 
-    public function setPrepareTime(int $prepare_time): self
+    public function setPrepareTime(int $prepareTime): self
     {
-        $this->prepare_time = $prepare_time;
+        $this->prepareTime = $prepareTime;
 
         return $this;
     }
@@ -151,6 +157,18 @@ class Cocktail
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getInstructions(): string
+    {
+        return $this->instructions;
+    }
+
+    public function setInstructions(string $instructions): self
+    {
+        $this->instructions = $instructions;
 
         return $this;
     }
