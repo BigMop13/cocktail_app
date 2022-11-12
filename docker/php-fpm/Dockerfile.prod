@@ -1,9 +1,0 @@
-FROM sts-bistro-api-build-app
-
-ENV APP_ENV=prod
-
-COPY . /application/
-
-RUN cd app/ && composer install
-
-RUN chown -R www-data:www-data /application

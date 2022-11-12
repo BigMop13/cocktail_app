@@ -1,9 +1,0 @@
-FROM sts-bistro-api-build-app
-
-COPY . /application/
-
-RUN cd app/ && composer install
-
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
-RUN echo xdebug.mode=coverage > /usr/local/etc/php/conf.d/xdebug.ini
