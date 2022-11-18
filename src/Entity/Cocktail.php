@@ -10,6 +10,8 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\CategoryCocktails;
 use App\Controller\CocktailSearcher;
 use App\Repository\CocktailRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -83,6 +85,14 @@ class Cocktail
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
     private ?string $instruction = null;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'cocktails')]
+    private Collection $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     public function getId(): int
     {
@@ -181,6 +191,33 @@ class Cocktail
     public function setInstruction(string $instruction): self
     {
         $this->instruction = $instruction;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addCocktail($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeCocktail($this);
+        }
 
         return $this;
     }
