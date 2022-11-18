@@ -20,9 +20,4 @@ class CategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Category::class);
     }
-
-    public function getCategoryCocktails(int $categoryId): array
-    {
-        return $this->find($categoryId)->getCocktail()->toArray();
-    }
 }

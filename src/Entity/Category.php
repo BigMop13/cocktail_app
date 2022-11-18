@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use App\Controller\CategoryCocktailsController;
+use App\Controller\CategoryCocktails;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -28,19 +29,20 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['category:read', 'category:write'])]
-    private ?int $id = null;
+    #[Groups(['category:read', 'category:write', 'category_cocktail:read'])]
+    #[ApiProperty(identifier: true)]
+    private int $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read', 'category:write'])]
-    private ?string $name = null;
+    #[Groups(['category:read', 'category:write', 'category_cocktail:read'])]
+    private string $name;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['category:read', 'category:write'])]
+    #[Groups(['category:read', 'category:write', 'category_cocktail:read'])]
     private ?string $image = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Cocktail::class, orphanRemoval: true)]
-    #[Groups(['category:read', 'cocktail:read'])]
+    #[Groups(['category:read', 'category_cocktail:read'])]
     private Collection $cocktail;
 
     public function __construct()
@@ -48,12 +50,12 @@ class Category
         $this->cocktail = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -78,32 +80,10 @@ class Category
     }
 
     /**
-     * @return Collection<int, cocktail>
+     * @return Collection<int, Cocktail>
      */
     public function getCocktail(): Collection
     {
         return $this->cocktail;
-    }
-
-    public function addCocktailId(cocktail $cocktailId): self
-    {
-        if (!$this->cocktail->contains($cocktailId)) {
-            $this->cocktail->add($cocktailId);
-            $cocktailId->setCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCocktailId(cocktail $cocktailId): self
-    {
-        if ($this->cocktail->removeElement($cocktailId)) {
-            // set the owning side to null (unless already changed)
-            if ($cocktailId->getCategory() === $this) {
-                $cocktailId->setCategory(null);
-            }
-        }
-
-        return $this;
     }
 }
