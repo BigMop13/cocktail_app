@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Controller\CategoryCocktails;
+use App\Controller\CocktailSearcher;
 use App\Repository\CocktailRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,6 +27,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
         normalizationContext: ['groups' => ['category_cocktail:read']],
         denormalizationContext: ['groups' => ['category_cocktail:write']],
         name: 'category_cocktails',
+    ),
+    new Get(
+        uriTemplate: '/find_cocktail/{text}',
+        formats: ['json' => ['application/json']],
+        defaults: ['_api_receive'=>false],
+        controller: CocktailSearcher::class,
+        normalizationContext: ['groups' => ['cocktail:read']],
+        denormalizationContext: ['groups' => ['cocktail:write']],
+        name: 'cocktail_searcher',
     )
 ],
     formats: ['json' => ['application/json']],
