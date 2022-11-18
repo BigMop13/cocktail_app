@@ -20,9 +20,8 @@ class CategoryCocktails extends AbstractController
     /**
      * @throws NoCocktailsFound
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(int $categoryId): JsonResponse
     {
-        $categoryId = (int) $request->query->get('categoryId', 1);
         try {
             return $this->json($this->categoryRepository->find($categoryId)->getCocktail()->toArray());
         }

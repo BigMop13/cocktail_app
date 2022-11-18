@@ -20,4 +20,13 @@ class CocktailRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Cocktail::class);
     }
+
+    public function findCocktailByString(string $text): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where("c.name LIKE :text")
+            ->setParameter('text', $text.'%')
+            ->getQuery()
+            ->getArrayResult();
+    }
 }
