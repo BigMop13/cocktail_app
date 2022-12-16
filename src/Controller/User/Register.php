@@ -24,9 +24,8 @@ class Register
 
     public function __invoke(Request $request): JsonResponse
     {
-        $registrationInfo = $this->serializer->deserialize($request->getContent(), RegistrationInput::class, 'json');
         try {
-
+            $registrationInfo = $this->serializer->deserialize($request->getContent(), RegistrationInput::class, 'json');
             $user = new User();
             $user->setUsername($registrationInfo->getUsername())
                 ->setEmail($registrationInfo->getEmail())
@@ -34,11 +33,6 @@ class Register
                 ->setNumber($registrationInfo->getNumber());
 
             $this->userPersister->persist($user);
-            return new JsonResponse([
-                'status' => 'success',
-                'statusCode' => Response::HTTP_CREATED,
-                'message' => 'User created successfully'
-                ]);
         }
         catch (\Exception $exception)
         {
@@ -48,5 +42,11 @@ class Register
                 'message' => 'Cannot create user, incorrect registration details provided'
             ]);
         }
+
+        return new JsonResponse([
+            'status' => 'success',
+            'statusCode' => Response::HTTP_CREATED,
+            'message' => 'User created successfully'
+        ]);
     }
 }
