@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(operations: [
@@ -20,13 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     new Get(),
     new Post(
         uriTemplate: '/register',
-        formats: ['json' => ['application/json']],
-        defaults: ['_api_receive'=>false],
-        controller: Register::class,
-        normalizationContext: ['groups' => ['registration:read']],
-        denormalizationContext: ['groups' => ['registration:write']],
-        name: 'user_registration',
-    ),
+        formats: ['json' => ['application/json']],),
 ],
     formats: ['json' => ['application/json']],
     normalizationContext: ['groups' => ['user:read']],
@@ -41,15 +36,18 @@ class User implements UserInterface
     private int $id;
 
     #[ORM\Column(length: 180, unique: true)]
-
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3)]
+    #[Groups(['user:read', 'user:write'])]
     private string $username;
 
     #[ORM\Column]
-    #[Groups(['user:read', 'user:write'])]
-    private array $roles = [];
+    #[Groups(['user:read'])]
+    private array $roles = ['ROLE_USER'];
 
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:write', 'registration:write', 'registration:write', 'registration:read'])]
+    #[Assert\NotBlank]
     private string $email;
 
     #[ORM\ManyToMany(targetEntity: Cocktail::class, inversedBy: 'users')]
@@ -62,6 +60,8 @@ class User implements UserInterface
 
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:write', 'registration:write', 'registration:read'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 9)]
     private string $number;
 
     public function __construct()

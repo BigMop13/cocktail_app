@@ -49,32 +49,32 @@ class Cocktail
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
+    #[Groups(['cocktail:read','user:write', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
     #[ApiProperty(identifier: true)]
     private int $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
+    #[Groups(['cocktail:read', 'user:write', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
     private string $name;
 
     #[ORM\Column(type: Types::ARRAY)]
-    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
+    #[Groups(['cocktail:read', 'user:write','cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
     private array $ingredients = [];
 
     #[ORM\Column]
-    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
+    #[Groups(['cocktail:read','user:write', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
     private int $stars;
 
     #[ORM\Column]
-    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
+    #[Groups(['cocktail:read', 'user:write', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
     private int $prepareTime;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
+    #[Groups(['cocktail:read', 'user:write', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
     private string $difficulty;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
+    #[Groups(['cocktail:read', 'user:write', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
     private ?string $image = null;
 
     #[ORM\ManyToOne(inversedBy: 'cocktail')]
@@ -83,7 +83,7 @@ class Cocktail
     private Category $category;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['cocktail:read', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
+    #[Groups(['cocktail:read', 'user:write', 'cocktail:write', 'category:read', 'cocktail:read', 'category_cocktail:read'])]
     private ?string $instruction = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'cocktails')]
