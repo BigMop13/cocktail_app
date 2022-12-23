@@ -35,8 +35,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
         formats: ['json' => ['application/json']],
         defaults: ['_api_receive'=>false],
         controller: CocktailSearcher::class,
-        normalizationContext: ['groups' => ['cocktail:read']],
-        denormalizationContext: ['groups' => ['cocktail:write']],
         name: 'cocktail_searcher',
     )
 ],
