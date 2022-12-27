@@ -29,17 +29,17 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['category:read', 'category:write', 'category_cocktail:read'])]
+    #[Groups(['category:read', 'category:write', 'category_cocktail:read', 'cocktail:write'])]
     #[ApiProperty(identifier: true)]
     private int $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read', 'category:write', 'category_cocktail:read'])]
+    #[Groups(['category:read', 'category:write', 'category_cocktail:read', 'cocktail:write'])]
     #[Assert\NotBlank]
     private string $name;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['category:read', 'category:write', 'category_cocktail:read'])]
+    #[Groups(['category:read', 'category:write', 'category_cocktail:read', 'cocktail:write'])]
     private ?string $image = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Cocktail::class, orphanRemoval: true)]
