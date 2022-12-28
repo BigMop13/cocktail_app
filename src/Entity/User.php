@@ -6,6 +6,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\AddFavDrink;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,7 +23,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     new Get(),
     new Post(
         uriTemplate: '/register',
-        formats: ['json' => ['application/json']],),
+        formats: ['json' => ['application/json']]),
+    new Put(
+        uriTemplate: '/add_drink',
+        formats: ['json' => ['application/json']],
+        defaults: ['_api_receive'=>false],
+        controller: AddFavDrink::class,)
 ],
     formats: ['json' => ['application/json']],
     normalizationContext: ['groups' => ['user:read']],
