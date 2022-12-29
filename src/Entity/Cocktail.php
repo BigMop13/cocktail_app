@@ -18,9 +18,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CocktailRepository::class)]
 #[ApiResource(operations: [
-    new GetCollection(),
-    new Get(),
-    new Post(),
+    new GetCollection(security: "is_granted('ROLE_USER')"),
+    new Get(security: "is_granted('ROLE_USER')"),
+    new Post(security: "is_granted('ROLE_USER')"),
     new Get(
         uriTemplate: '/category_cocktails/{categoryId}',
         formats: ['json' => ['application/json']],
@@ -28,14 +28,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
         controller: CategoryCocktails::class,
         normalizationContext: ['groups' => ['category_cocktail:read']],
         denormalizationContext: ['groups' => ['category_cocktail:write']],
-        name: 'category_cocktails',
+        security: "is_granted('ROLE_USER')",
+        name: 'category_cocktails'
     ),
     new Get(
         uriTemplate: '/find_cocktail/{text}',
         formats: ['json' => ['application/json']],
         defaults: ['_api_receive'=>false],
         controller: CocktailSearcher::class,
-        name: 'cocktail_searcher',
+        security: "is_granted('ROLE_USER')",
+        name: 'cocktail_searcher'
     )
 ],
     formats: ['json' => ['application/json']],
