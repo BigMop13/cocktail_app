@@ -20,8 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(operations: [
-    new GetCollection(),
-    new Get(),
+    new GetCollection(security: "is_granted('ROLE_USER')"),
+    new Get(security: "is_granted('ROLE_USER')"),
     new Post(
         uriTemplate: '/register',
         formats: ['json' => ['application/json']]),
@@ -29,12 +29,14 @@ use Symfony\Component\Validator\Constraints as Assert;
         uriTemplate: '/add_drink',
         formats: ['json' => ['application/json']],
         defaults: ['_api_receive'=>false],
-        controller: AddFavDrink::class,),
+        controller: AddFavDrink::class,
+        security: "is_granted('ROLE_USER')"),
     new Get(
         uriTemplate: '/cocktails/user/favourites',
         formats: ['json' => ['application/json']],
         defaults: ['_api_receive'=>false],
         controller: UserFavDrinks::class,
+        security: "is_granted('ROLE_USER')"
     ),
 ],
     formats: ['json' => ['application/json']],

@@ -16,9 +16,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource(operations: [
-    new GetCollection(),
-    new Get(),
-    new Post(),
+    new GetCollection(security: "is_granted('ROLE_USER')"),
+    new Get(security: "is_granted('ROLE_USER')"),
+    new Post(security: "is_granted('ROLE_USER')"),
 ],
     formats: ['json' => ['application/json']],
     normalizationContext: ['groups' => ['category:read']],
