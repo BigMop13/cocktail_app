@@ -5,6 +5,8 @@ declare(strict_types=1);
 
 namespace App\Dto;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class RegistrationInput
 {
     public function __construct(private readonly string $username, private readonly string $email, private readonly string $password, private readonly string $number)
@@ -12,7 +14,8 @@ class RegistrationInput
     }
 
     /**
-     * @return string
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     public function getUsername(): string
     {
@@ -20,7 +23,9 @@ class RegistrationInput
     }
 
     /**
-     * @return string
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Email()
      */
     public function getEmail(): string
     {
@@ -28,7 +33,9 @@ class RegistrationInput
     }
 
     /**
-     * @return string
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length(5)
      */
     public function getPassword(): string
     {
@@ -36,7 +43,9 @@ class RegistrationInput
     }
 
     /**
-     * @return string
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Length(9)
      */
     public function getNumber(): string
     {

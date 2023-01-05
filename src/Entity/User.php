@@ -22,9 +22,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(operations: [
     new GetCollection(security: "is_granted('ROLE_USER')"),
     new Get(security: "is_granted('ROLE_USER')"),
-    new Post(
-        uriTemplate: '/register',
-        formats: ['json' => ['application/json']]),
     new Put(
         uriTemplate: '/add_drink',
         formats: ['json' => ['application/json']],
@@ -64,6 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:write', 'registration:write', 'registration:write', 'registration:read'])]
     #[Assert\NotBlank]
+    #[Assert\Email]
     private string $email;
 
     #[ORM\ManyToMany(targetEntity: Cocktail::class, inversedBy: 'users')]

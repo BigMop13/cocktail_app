@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource(operations: [
-    new GetCollection(security: "is_granted('ROLE_USER')"),
+    new GetCollection(normalizationContext: ['groups' => ['category_collection:read']], security: "is_granted('ROLE_USER')"),
     new Get(security: "is_granted('ROLE_USER')"),
     new Post(security: "is_granted('ROLE_USER')"),
 ],
@@ -29,17 +29,17 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['category:read', 'category:write', 'category_cocktail:read', 'cocktail:write'])]
+    #[Groups(['category:read', 'category:write', 'category_cocktail:read', 'cocktail:write', 'category_collection:read'])]
     #[ApiProperty(identifier: true)]
     private int $id;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['category:read', 'category:write', 'category_cocktail:read', 'cocktail:write'])]
+    #[Groups(['category:read', 'category:write', 'category_cocktail:read', 'cocktail:write', 'category_collection:read'])]
     #[Assert\NotBlank]
     private string $name;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['category:read', 'category:write', 'category_cocktail:read', 'cocktail:write'])]
+    #[Groups(['category:read', 'category:write', 'category_cocktail:read', 'cocktail:write', 'category_collection:read'])]
     private ?string $image = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Cocktail::class, orphanRemoval: true)]
