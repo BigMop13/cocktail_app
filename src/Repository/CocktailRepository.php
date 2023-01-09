@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Cocktail;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -28,5 +30,16 @@ class CocktailRepository extends ServiceEntityRepository
             ->setParameter('text', $text.'%')
             ->getQuery()
             ->getArrayResult();
+    }
+
+    public function findCocktailById(int $id): ?Cocktail
+    {
+        return $this->createQueryBuilder('c')
+            ->addSelect('ca')
+            ->leftJoin('c.category', 'ca')
+            ->where("c.id = :id")
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 }
