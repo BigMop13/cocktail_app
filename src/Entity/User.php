@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\AddFavDrink;
+use App\Controller\RemoveFavDrink;
 use App\Controller\UserFavDrinks;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,11 +23,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(operations: [
     new GetCollection(security: "is_granted('ROLE_USER')"),
     new Get(security: "is_granted('ROLE_USER')"),
-    new Put(
+    new Post(
         uriTemplate: '/add_drink',
         formats: ['json' => ['application/json']],
         defaults: ['_api_receive'=>false],
         controller: AddFavDrink::class,
+        security: "is_granted('ROLE_USER')"),
+    new Post(
+        uriTemplate: '/remove_drink',
+        formats: ['json' => ['application/json']],
+        defaults: ['_api_receive'=>false],
+        controller: RemoveFavDrink::class,
         security: "is_granted('ROLE_USER')"),
     new Get(
         uriTemplate: '/cocktails/user/favourites',
@@ -169,9 +176,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeCocktail(Cocktail $cocktail): self
     {
-        $this->cocktails->removeElement($cocktail);
+        if ($this->cocktails->contains($cocktail)) {
+            $this->cocktails->removeElement($cocktail);
+        }
 
         return $this;
+    }
+
+    public function hasAddedCocktail(Cocktail $cocktail): bool
+    {
+        return $this->cocktails->contains($cocktail);
     }
 
     public function getPassword(): ?string
