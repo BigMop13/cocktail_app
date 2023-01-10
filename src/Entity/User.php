@@ -85,9 +85,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 9)]
     private string $number;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Rating::class, orphanRemoval: true)]
+    private Collection $ratings;
+
     public function __construct()
     {
         $this->cocktails = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): int
@@ -208,6 +212,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setNumber(string $number): self
     {
         $this->number = $number;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): self
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function hasThatRating(Rating $rating): bool
+    {
+        return $this->ratings->contains($rating);
+    }
+
+    public function removeRating(Rating $rating): self
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getUser() === $this) {
+                $rating->setUser(null);
+            }
+        }
 
         return $this;
     }

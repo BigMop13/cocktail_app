@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Cocktail;
 use App\Exception\NoCocktailsFound;
 use App\Repository\CocktailRepository;
+use App\Repository\RatingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,8 +18,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 class CocktailDetails extends AbstractController
 {
-    public function __construct(private readonly CocktailRepository $cocktailRepository, private readonly SerializerInterface $serializer)
-    {
+    public function __construct(private readonly CocktailRepository $cocktailRepository,
+                                private readonly RatingRepository $ratingRepository
+    ){
     }
 
     /**
@@ -28,6 +30,9 @@ class CocktailDetails extends AbstractController
     {
         try {
             $cocktail = $this->cocktailRepository->findCocktailById($cocktailId);
+            $user = $this->getUser();
+            $userRating = $this->ratingRepository->findRatingByUserAndCocktail($user, $cocktail);
+            $overallRating = $this->ratingRepository->getOverallDrinkRating($cocktail);
 
             if (!$cocktail)
             {
@@ -38,12 +43,10 @@ class CocktailDetails extends AbstractController
         {
             return new JsonResponse([
                 'statusCode' => 404,
-                'message' => 'No cocktails found'
+                'message' => $exception->getMessage()
             ]);
         }
-        $userFavourites = $this->getUser()->hasAddedCocktail($cocktail);
-
-
+        $userFavourites = $user->hasAddedCocktail($cocktail);
 
         return new JsonResponse([
             'id' => $cocktail->getId(),
@@ -55,7 +58,9 @@ class CocktailDetails extends AbstractController
             'image' => $cocktail->getImage(),
             'category' => $cocktail->getCategory(),
             'instruction' => $cocktail->getInstruction(),
-            'isFavourite' => $userFavourites
+            'isFavourite' => $userFavourites,
+            'userRating' => $userRating->getStars(),
+            'overallRating' => $overallRating
         ]);
     }
 }

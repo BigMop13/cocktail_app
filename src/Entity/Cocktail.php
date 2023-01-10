@@ -98,9 +98,13 @@ class Cocktail
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'cocktails')]
     private Collection $users;
 
+    #[ORM\OneToMany(mappedBy: 'cocktail', targetEntity: Rating::class, orphanRemoval: true)]
+    private Collection $ratings;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): int
@@ -231,6 +235,36 @@ class Cocktail
     {
         if ($this->users->removeElement($user)) {
             $user->removeCocktail($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): self
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setCocktail($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): self
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getCocktail() === $this) {
+                $rating->setCocktail(null);
+            }
         }
 
         return $this;
