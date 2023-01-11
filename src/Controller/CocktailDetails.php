@@ -30,14 +30,17 @@ class CocktailDetails extends AbstractController
     {
         try {
             $cocktail = $this->cocktailRepository->findCocktailById($cocktailId);
-            $user = $this->getUser();
-            $userRating = $this->ratingRepository->findRatingByUserAndCocktail($user, $cocktail);
-            $overallRating = $this->ratingRepository->getOverallDrinkRating($cocktail);
 
             if (!$cocktail)
             {
                 throw new NoCocktailsFound('No cocktails found');
             }
+
+            $user = $this->getUser();
+            $userRating = $this->ratingRepository->findRatingStarsByUserAndCocktail($user, $cocktail);
+            $overallRating = $this->ratingRepository->getOverallDrinkRating($cocktail);
+
+
         }
         catch (\Exception $exception)
         {
@@ -59,7 +62,7 @@ class CocktailDetails extends AbstractController
             'category' => $cocktail->getCategory(),
             'instruction' => $cocktail->getInstruction(),
             'isFavourite' => $userFavourites,
-            'userRating' => $userRating->getStars(),
+            'userRating' => $userRating,
             'overallRating' => $overallRating
         ]);
     }
