@@ -24,10 +24,9 @@ class RatingRepository extends ServiceEntityRepository
         parent::__construct($registry, Rating::class);
     }
 
-    public function findRatingStarsByUserAndCocktail(User $user, Cocktail $cocktail): ?int
+    public function findRatingByUserAndCocktail(User $user, Cocktail $cocktail): ?Rating
     {
         return $this->createQueryBuilder('r')
-            ->select('r.stars')
             ->where('r.user =:user')
             ->andWhere('r.cocktail =:cocktail')
             ->setParameters([
@@ -35,7 +34,7 @@ class RatingRepository extends ServiceEntityRepository
                 'cocktail' => $cocktail
             ])
             ->getQuery()
-            ->getOneOrNullResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
+            ->getOneOrNullResult(AbstractQuery::HYDRATE_OBJECT);
     }
 
     public function getOverallDrinkRating(Cocktail $cocktail): ?int

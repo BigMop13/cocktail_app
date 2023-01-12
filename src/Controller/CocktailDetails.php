@@ -37,9 +37,9 @@ class CocktailDetails extends AbstractController
             }
 
             $user = $this->getUser();
-            $userRating = $this->ratingRepository->findRatingStarsByUserAndCocktail($user, $cocktail);
+            $userRating = $this->ratingRepository->findRatingByUserAndCocktail($user, $cocktail);
             $overallRating = $this->ratingRepository->getOverallDrinkRating($cocktail);
-
+            $stars = $userRating?->getStars();
 
         }
         catch (\Exception $exception)
