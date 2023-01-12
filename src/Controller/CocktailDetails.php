@@ -62,7 +62,7 @@ class CocktailDetails extends AbstractController
             'category' => $cocktail->getCategory(),
             'instruction' => $cocktail->getInstruction(),
             'isFavourite' => $userFavourites,
-            'userRating' => $userRating,
+            'userRating' => $stars,
             'overallRating' => $overallRating
         ]);
     }
